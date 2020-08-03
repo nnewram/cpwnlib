@@ -8,20 +8,6 @@
 #include <string.h> 
 #include <stdarg.h>
 
-#define logInfo(fmt, ...) \
-    do { \
-        if (LOGLEVEL == INFO) {\
-            fprintf(stderr, fmt "\n", __VA_ARGS__); \
-        } \
-    } while(0)
-
-#define logError(fmt, ...) \
-    do { \
-        if (LOGLEVEL == ERROR || LOGLEVEL == INFO) { \
-            fprintf(stderr, "Error in file %s, line %d, function %s: " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
-        } \
-    } while(0)
-
 char *pwnread(struct PwnRemote *pr, int length) {
     size_t totalRead = 0;
     char *buffer = malloc(length);
@@ -101,6 +87,7 @@ char *pwnreaduntil(struct PwnRemote *pr, char* delim) {
 
     if (delim_length == 0) {
         logError("Delim has length 0.");
+        return (void*)ERROR;
     }
 
     for (i = 0; i < BLOCK_SIZE; i++) {
@@ -164,7 +151,7 @@ struct PwnRemote *pwnremote(char* ip, int port) {
 	
     if (inet_pton(AF_INET, ip, &serverAddr.sin_addr) <= 0) {
         logError("Invalid IP address: %s", ip);
-        return ERROR;
+        return (void*)ERROR;
     }
     
     if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof serverAddr) >= 0) {
@@ -173,7 +160,7 @@ struct PwnRemote *pwnremote(char* ip, int port) {
 
     else {
         logError("Could not accept connection to ip %s with port %d", ip, port);
-        return ERROR;
+        return (void*)ERROR;
     }
 
     struct PwnRemote *pwnremote = calloc(1, sizeof *pwnremote);

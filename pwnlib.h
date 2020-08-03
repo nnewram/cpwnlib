@@ -11,6 +11,20 @@ enum LOG_LEVEL {SILENT, INFO, ERROR};
 #define LOGLEVEL INFO
 #endif
 
+#define logInfo(fmt, ...) \
+    do { \
+        if (LOGLEVEL == INFO) {\
+            fprintf(stderr, fmt "\n", __VA_ARGS__); \
+        } \
+    } while(0)
+
+#define logError(fmt, ...) \
+    do { \
+        if (LOGLEVEL == ERROR || LOGLEVEL == INFO) { \
+            fprintf(stderr, "Error in file %s, line %d, function %s: " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
+        } \
+    } while(0)
+
 struct PwnRemote {
     int socket;
     char* inputBuffer;
@@ -30,5 +44,11 @@ struct PwnRemote *pwnremote(char* ip, int port);
 void pwnsend(struct PwnRemote *pr, char* fmt, ...);
 void pwnsendline(struct PwnRemote *pr, char* fmt, ...);
 
-#include "pwnlib.c"
+#include "remote/remote_process.c"
+
+char* pwncyclic(int length, int width);
+int pwncyclicfind(char* marker);
+
+#include "util/util.c"
+
 #endif
