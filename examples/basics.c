@@ -5,8 +5,7 @@
 #include "../pwnlib.h"
 
 void printGet(PwnS* p) { // small little helper function
-    char* buf;
-    buf = pwnreadline(p); // get one line.
+    char *buf = pwnreadline(p); // get one line.
     printf("%s\n", buf);
     free(buf);
 }

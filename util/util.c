@@ -2,13 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-// cyclic is a retarded shit function that is completely fucking worthless and bloated to hell, just show hex instead
-char* pwncyclic(int length, int width) {
+#define _ASM(N,NE, C) asm(".global "#N"\n"#N":\n\t"C".global "#NE"\n"#NE":\n\t"); extern char N[], NE[];
+#define ASM(N, C) _ASM(N,end_##N, C)
+
+char* pwncyclic(size_t length, int width) {
     char* pattern = malloc(length + 2);
     char buf[16];
     int i;
     int blk_cntr = 0;
-    char* fmt = width == 4 ? "|%03X" : "|%07X";
+    char fmt[6] = width == 4 ? "|%03X" : "|%07X";
+
+    LOGASSERT(pattern != 0, "") 
 
     for (i = 0; i < length; i += width, blk_cntr++) {
         sprintf(buf, fmt, blk_cntr);
@@ -24,7 +28,7 @@ int pwncyclicfind(char* marker) {
     if (*marker == '|') {
         marker++;
         buf = marker;
-        while (*++buf != '0')
+        while (*buf && (*++buf != '0'));
         *buf = '\0';
     }
 

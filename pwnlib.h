@@ -13,7 +13,7 @@ enum LOG_LEVEL {SILENT, INFO, ERROR};
 
 #define logInfo(fmt, ...) \
     do { \
-        if (LOGLEVEL == INFO) {\
+        if (LOGLEVEL == INFO) { \
             fprintf(stderr, fmt "\n", __VA_ARGS__); \
         } \
     } while(0)
@@ -22,6 +22,13 @@ enum LOG_LEVEL {SILENT, INFO, ERROR};
     do { \
         if (LOGLEVEL == ERROR || LOGLEVEL == INFO) { \
             fprintf(stderr, "Error in file %s, line %d, function %s: " fmt "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
+        } \
+    } while(0)
+
+#define LOGASSERT(statement, fmt, ...) \
+    do { \
+        if (statement) { \
+            logError(fmt, __VA_ARGS__) \
         } \
     } while(0)
 
@@ -49,6 +56,6 @@ void pwnsendline(struct PwnRemote *pr, char* fmt, ...);
 char* pwncyclic(int length, int width);
 int pwncyclicfind(char* marker);
 
-#include "util/util.c"
+//#include "util/util.c"
 
 #endif
